@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chat-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #chat-messages {
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        #chat-form {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        #user-message {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        #user-message:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        #chat-form button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #chat-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin: 10px 0;
+        }
+
+        .message strong {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fitness Chatbot</h1>
+        <div id="chat-container">
+            <div id="chat-messages"></div>
+            <form id="chat-form">
+                <input type="text" id="user-message" placeholder="Type your message here..." autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const chatForm = document.getElementById("chat-form");
+        const chatMessages = document.getElementById("chat-messages");
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userMessage = document.getElementById("user-message").value;
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `user_message=${encodeURIComponent(userMessage)}`,
+            });
+            const data = await response.json();
+            appendMessage("You", userMessage);
+            appendMessage("Fitness Chatbot", data.response);
+            document.getElementById("user-message").value = "";
+        });
+
+        function appendMessage(sender, message) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html>
